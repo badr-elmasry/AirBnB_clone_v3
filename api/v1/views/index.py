@@ -1,28 +1,30 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Sep  1 14:42:23 2020
-@authors: Robinson Montes.
-          Mauricio Olarte
-"""
-from flask import jsonify, Blueprint
-from models import storage
+"""This module implement a rule that returns the status of the application"""
+from flask import jsonify
+import models
 from api.v1.views import app_views
+from models.amenity import Amenity
+from models.city import City
+from models.place import Place
+from models.review import Review
 from models.state import State
+from models.user import User
 
 
-@app_views.route('/status', methods=['GET'], strict_slashes=False)
-def get_status():
-    """ check the status of route """
-    return jsonify({'status': 'OK'})
+@app_views.route("/status", strict_slashes=False)
+def view_status():
+    """View function that return a json message"""
+    return jsonify({"status": "OK"})
 
 
-@app_views.route('/stats', methods=['GET'], strict_slashes=False)
-def object_status():
-    """Create an endpoint that retrieves the number of each objects by type
-    """
-    objects = {"amenities": 'Amenity', "cities": 'City', "places": 'Place',
-               "reviews": 'Review', "states": 'State', "users": 'User'}
-    for key, value in objects.items():
-        objects[key] = storage.count(value)
-    return jsonify(objects)
+@app_views.route("/stats", strict_slashes=False)
+def view_stats():
+    """Veiw function that retrieves the number of each object by type"""
+    return jsonify({
+        "amenities": models.storage.count(Amenity),
+        "cities": models.storage.count(City),
+        "places": models.storage.count(Place),
+        "reviews": models.storage.count(Review),
+        "states": models.storage.count(State),
+        "users": models.storage.count(User)
+    })
