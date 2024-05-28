@@ -1,30 +1,28 @@
 #!/usr/bin/python3
-""" Index """
-from models.amenity import Amenity
-from models.city import City
-from models.place import Place
-from models.review import Review
-from models.state import State
-from models.user import User
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Sep  1 14:42:23 2020
+@authors: Robinson Montes.
+          Mauricio Olarte
+"""
+from flask import jsonify, Blueprint
 from models import storage
 from api.v1.views import app_views
-from flask import jsonify
+from models.state import State
 
 
 @app_views.route('/status', methods=['GET'], strict_slashes=False)
-def status():
-    """ Status of API """
-    return jsonify({"status": "OK"})
+def get_status():
+    """ check the status of route """
+    return jsonify({'status': 'OK'})
 
 
 @app_views.route('/stats', methods=['GET'], strict_slashes=False)
-def number_objects():
-    """ Retrieves the number of each objects by type """
-    classes = [Amenity, City, Place, Review, State, User]
-    names = ["amenities", "cities", "places", "reviews", "states", "users"]
-
-    num_objs = {}
-    for i in range(len(classes)):
-        num_objs[names[i]] = storage.count(classes[i])
-
-    return jsonify(num_objs)
+def object_status():
+    """Create an endpoint that retrieves the number of each objects by type
+    """
+    objects = {"amenities": 'Amenity', "cities": 'City', "places": 'Place',
+               "reviews": 'Review', "states": 'State', "users": 'User'}
+    for key, value in objects.items():
+        objects[key] = storage.count(value)
+    return jsonify(objects)
