@@ -1,37 +1,30 @@
 #!/usr/bin/python3
-"""Routes Handling for the App.
-
-This module contains route handlers for the Flask app.
-It defines the various routes and their corresponding functions
-to handle incoming HTTP requests.
-Each route is responsible for a specific endpoint or functionality of the app.
-
-Routes:
-- GET /status: Returns the status of the API.
-- GET /stats: Retrieves the number of each object by type.
-"""
-
+"""This module implement a rule that returns the status of the application"""
+from flask import jsonify
+import models
 from api.v1.views import app_views
-from flask import Response, jsonify
-from models import storage
-from models.engine.db_storage import classes
+from models.amenity import Amenity
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.state import State
+from models.user import User
 
 
-@app_views.route("/status")
-def check_status():
-    """Returns the status of the API."""
+@app_views.route("/status", strict_slashes=False)
+def view_status():
+    """View function that return a json message"""
     return jsonify({"status": "OK"})
 
 
-@app_views.route("/stats")
-def num_objs():
-    """Retrieves the number of each objects by type."""
-    objects = {
-        "amenities": storage.count(classes["Amenity"]),
-        "cities": storage.count(classes["City"]),
-        "places": storage.count(classes["Place"]),
-        "reviews": storage.count(classes["Review"]),
-        "states": storage.count(classes["State"]),
-        "users": storage.count(classes["User"]),
-    }
-    return jsonify(objects)
+@app_views.route("/stats", strict_slashes=False)
+def view_stats():
+    """Veiw function that retrieves the number of each object by type"""
+    return jsonify({
+        "amenities": models.storage.count(Amenity),
+        "cities": models.storage.count(City),
+        "places": models.storage.count(Place),
+        "reviews": models.storage.count(Review),
+        "states": models.storage.count(State),
+        "users": models.storage.count(User)
+    })
